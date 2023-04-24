@@ -11,7 +11,8 @@ const defaultState = {
   popup_card_delete: false,
   popup_profile: false,
   popup_avatar: false,
-  popup_card: false
+  popup_card: false,
+  isAnyOpened: false
 };
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
       setState(defaultState);
     };
     const setPopup = (e) => {
-      setState({ ...defaultState, [e.detail]: true });
+      setState({ ...defaultState, [e.detail]: true, isAnyOpened: true });
     };
 
     document.addEventListener(eventNames.openPopup, setPopup);
@@ -40,18 +41,24 @@ function App() {
       {state.popup_profile && <PopupWithForm 
                                 title='Редактировать профиль' 
                                 divClassName='popup_profile' 
-                                containerClassName='popup__container-profile'>
-                                  {forms.popup_profile}</PopupWithForm>}
+                                containerClassName='popup__container-profile'
+                                openPopup={state}>
+                                  {forms.popup_profile}
+                                  </PopupWithForm>}
       {state.popup_avatar && <PopupWithForm 
                                 title='Обновить аватар' 
                                 divClassName='popup_avatar' 
-                                containerClassName='popup__container-profile'>
-                                  {forms.profile_edit}</PopupWithForm>}
+                                containerClassName='popup__container-profile'
+                                openPopup={state}>
+                                  {forms.profile_edit}
+                                  </PopupWithForm>}
       {state.popup_card && <PopupWithForm 
                                 title='Новое место' 
                                 divClassName='popup_card'
-                                containerClassName='popup__container-card'>
-                                  {forms.card_form}</PopupWithForm>}
+                                containerClassName='popup__container-card'
+                                openPopup={state}>
+                                  {forms.card_form}
+                                  </PopupWithForm>}
       {state.pop3 && <p>Popup 3</p>}
         <Header />
         <Main />
