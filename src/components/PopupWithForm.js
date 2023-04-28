@@ -2,25 +2,33 @@ import { createCustomEvent } from "../helpers/createCustomEvent";
 import { eventNames } from "../helpers/eventNames";
 
 function PopupWithForm(props) {
-    console.log(props)
-    const handleClearPopup = () => createCustomEvent(eventNames.clearPopups);
-    
-  return (
-<>
-{/* <div className="popup popup_card-delete popup_opened">
-    <div className="popup__container popup__container-profile">
-        <h2 className="popup__title">{props.title}</h2>
-        Вы уверены?
-        <button type="button" className="popup__exit popup__exit-profile" aria-label="Закрыть попап" onClick={handleClearPopup}></button>
-    </div>         
-</div> */}
-<div className={`popup ${props.divClassName} ${props.openPopup.isAnyOpened && 'popup_opened'}` } onClick={handleClearPopup}>
-    <div className={`popup__container ${props.containerClassName}`}>
-        <h2 className="popup__title">{props.title}</h2>
-        <button type="button" className="popup__exit popup__exit-profile" aria-label="Закрыть попап" onClick={handleClearPopup}></button>
-        {props.children}
-    </div>
-</div>
-</>
-)}
+   const { isOpened, divClassName, containerClassName, title, children } =
+      props;
+   const handleOverlayClick = (e) => {
+      if (e.target?.className?.includes(props.divClassName)) {
+         createCustomEvent(eventNames.clearPopups);
+      }
+   };
+   const handleCloseButtonClick = () => {
+      createCustomEvent(eventNames.clearPopups);
+   };
+
+   return (
+      <>
+         <div
+            className={`popup ${divClassName} ${isOpened && "popup_opened"}`}
+            onClick={handleOverlayClick}>
+            <div className={`popup__container ${containerClassName}`}>
+               <h2 className="popup__title">{title}</h2>
+               <button
+                  type="button"
+                  className="popup__exit popup__exit-profile"
+                  aria-label="Закрыть попап"
+                  onClick={handleCloseButtonClick}></button>
+               {children}
+            </div>
+         </div>
+      </>
+   );
+}
 export default PopupWithForm;
