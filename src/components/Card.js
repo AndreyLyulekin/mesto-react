@@ -2,7 +2,7 @@ import React from "react";
 import { createCustomEvent } from "../helpers/createCustomEvent";
 import { eventNames } from "../helpers/eventNames";
 
-export default function Template(props) {
+export default function Card(props) {
    const { name, link, likes } = props.props;
 
    const handleClickSelectedCard = (e, link, name) => {

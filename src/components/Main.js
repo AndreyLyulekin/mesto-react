@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { UserService } from "./Api/UserService";
 import { CardsService } from "./Api/CardsService";
 import { apiCredentials } from "./utils/consts";
-import Template from "../helpers/templates";
+import Card from "./Card";
 
 function Main(props) {
    // const handleClickPopup_card_delete = () => createCustomEvent(eventNames.openPopup, "popup_card_delete");
@@ -61,7 +61,7 @@ function Main(props) {
          </section>
          <section className="elements">
             {apiCardsState.map((card) => (
-               <Template key={card._id} props={card} />
+               <Card key={card._id} props={card} />
             ))}
          </section>
       </main>
