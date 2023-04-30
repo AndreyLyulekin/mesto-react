@@ -3,65 +3,74 @@ import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
-import { eventNames } from "../helpers/eventNames";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { forms } from "../helpers/forms";
 import ImagePopup from "./ImagePopup";
 
-const defaultState = {
-   popup_card_delete: false,
-   popup_profile: false,
-   popup_avatar: false,
-   popup_card: false,
-   selectedCard: false,
-};
-
 function App() {
-   const [state, setState] = useState(defaultState);
-
-   useEffect(() => {
-      const clearPopups = () => {
-         setState(defaultState);
-      };
-      const setPopup = (e) => {
-         setState({ ...defaultState, [e.detail]: true });
-      };
-
-      document.addEventListener(eventNames.openPopup, setPopup);
-      document.addEventListener(eventNames.clearPopups, clearPopups);
-
-      return () => {
-         document.removeEventListener(eventNames.openPopup, setPopup);
-         document.removeEventListener(eventNames.clearPopups, clearPopups);
-      };
-   }, []);
-
+   const [popupProfileState, setStatePopupProfile] = useState(false);
+   const [popupAvatarState, setStatePopupAvatar] = useState(false);
+   const [selectedCardState, setStateCardState] = useState(false);
+   const [popupSelectedCardState, setStateSelectedCard] = useState(false);
+   const callbackSetState = (setter, data) => {
+      setter(data);
+   };
+   const mainModalsArr = [
+      {
+         title: "Редактировать профиль",
+         divClassName: "popup_profile",
+         containerClassName: "popup__container-profile",
+         state: popupProfileState,
+         callbackSetState: setStatePopupProfile,
+         children: forms.popup_profile,
+      },
+      {
+         title: "Обновить аватар",
+         divClassName: "popup_avatar",
+         containerClassName: "popup__container-profile",
+         state: popupAvatarState,
+         callbackSetState: setStatePopupAvatar,
+         children: forms.profile_edit,
+      },
+      {
+         title: "Новое место",
+         divClassName: "popup_card",
+         containerClassName: "popup__container-card",
+         state: selectedCardState,
+         callbackSetState: setStateCardState,
+         children: forms.card_form,
+      },
+   ];
+   const callbacksState = {
+      setStatePopupProfile,
+      setStatePopupAvatar,
+      setStateCardState,
+      setStateSelectedCard,
+   };
    return (
       <div className="root">
-         <PopupWithForm
-            title="Редактировать профиль"
-            divClassName="popup_profile"
-            containerClassName="popup__container-profile"
-            isOpened={state.popup_profile}>
-            {forms.popup_profile}
-         </PopupWithForm>
-         <PopupWithForm
-            title="Обновить аватар"
-            divClassName="popup_avatar"
-            containerClassName="popup__container-profile"
-            isOpened={state.popup_avatar}>
-            {forms.profile_edit}
-         </PopupWithForm>
-         <PopupWithForm
-            title="Новое место"
-            divClassName="popup_card"
-            containerClassName="popup__container-card"
-            isOpened={state.popup_card}>
-            {forms.card_form}
-         </PopupWithForm>
-         <ImagePopup></ImagePopup>
+         {mainModalsArr.map((modalConfig) => (
+            <PopupWithForm
+               key={modalConfig.title}
+               title={modalConfig.title}
+               divClassName={modalConfig.divClassName}
+               containerClassName={modalConfig.containerClassName}
+               callbackSetState={modalConfig.callbackSetState}
+               state={modalConfig.state}
+               children={modalConfig.children}
+               props={callbacksState}
+            />
+         ))}
+         <ImagePopup
+            props={popupSelectedCardState}
+            setStateSelectedCard={setStateSelectedCard}
+         />
          <Header />
-         <Main />
+         <Main
+            props={callbackSetState}
+            setters={callbacksState}
+            setStateSelectedCard={setStateSelectedCard}
+         />
          <Footer />
       </div>
    );

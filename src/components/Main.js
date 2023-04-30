@@ -1,6 +1,3 @@
-import ImagePopup from "./ImagePopup";
-import { createCustomEvent } from "../helpers/createCustomEvent";
-import { eventNames } from "../helpers/eventNames";
 import { useEffect, useState } from "react";
 import { UserService } from "./Api/UserService";
 import { CardsService } from "./Api/CardsService";
@@ -8,17 +5,11 @@ import { apiCredentials } from "./utils/consts";
 import Card from "./Card";
 
 function Main(props) {
-   // const handleClickPopup_card_delete = () => createCustomEvent(eventNames.openPopup, "popup_card_delete");
-   const handleClickPopup_profile = () =>
-      createCustomEvent(eventNames.openPopup, "popup_profile");
-   const handleClickPopup_avatar = () =>
-      createCustomEvent(eventNames.openPopup, "popup_avatar");
-   const handleClickPopup_card = () =>
-      createCustomEvent(eventNames.openPopup, "popup_card");
-
    const [apiProfileState, setApiProfileState] = useState({});
    const [apiCardsState, setApiCardsState] = useState([]);
-
+   const callbackSetState = props.props;
+   const { setStatePopupProfile, setStatePopupAvatar, setStateCardState } =
+      props.setters;
    useEffect(() => {
       const cardService = new CardsService(apiCredentials);
       const userService = new UserService(apiCredentials);
@@ -29,18 +20,16 @@ function Main(props) {
          })
          .catch((e) => console.error(e?.reason || e?.message));
    }, []);
-
    const { name, about, avatar } = apiProfileState;
 
    return (
       <main>
-         <ImagePopup></ImagePopup>
          <section className="profile">
-            <div className="profile__avatar-case">
+            <div
+               className="profile__avatar-case"
+               onClick={() => callbackSetState(setStatePopupAvatar, true)}>
                <img src={avatar} className="profile__photo" alt="Ваш аватар" />
-               <div
-                  className="profile__avatar-change"
-                  onClick={handleClickPopup_avatar}></div>
+               <div className="profile__avatar-change"></div>
             </div>
             <div className="profile__info-case">
                <div className="profile__case">
@@ -49,7 +38,9 @@ function Main(props) {
                      type="button"
                      aria-label="Кнопка редактирования"
                      className="profile__edit-btn"
-                     onClick={handleClickPopup_profile}></button>
+                     onClick={() =>
+                        callbackSetState(setStatePopupProfile, true)
+                     }></button>
                </div>
                <p className="profile__subtitle">{about}</p>
             </div>
@@ -57,11 +48,18 @@ function Main(props) {
                type="button"
                aria-label="Кнопка добавления фото"
                className="profile__add-btn"
-               onClick={handleClickPopup_card}></button>
+               onClick={() =>
+                  callbackSetState(setStateCardState, true)
+               }></button>
          </section>
          <section className="elements">
             {apiCardsState.map((card) => (
-               <Card key={card._id} props={card} />
+               <Card
+                  key={card._id}
+                  cardData={card}
+                  callbackSetState={callbackSetState}
+                  setStateSelectedCard={props.setStateSelectedCard}
+               />
             ))}
          </section>
       </main>

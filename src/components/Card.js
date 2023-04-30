@@ -1,17 +1,16 @@
 import React from "react";
-import { createCustomEvent } from "../helpers/createCustomEvent";
-import { eventNames } from "../helpers/eventNames";
 
 export default function Card(props) {
-   const { name, link, likes } = props.props;
-
+   const { name, link, likes } = props.cardData;
+   const callbackSetState = props.callbackSetState;
+   const setStateSelectedCard = props.setStateSelectedCard;
    const handleClickSelectedCard = (e, link, name) => {
       const data = {
          link: link,
          name: name,
          isOpened: true,
       };
-      createCustomEvent(eventNames.selectedCard, data);
+      callbackSetState(setStateSelectedCard, data);
    };
    return (
       <div

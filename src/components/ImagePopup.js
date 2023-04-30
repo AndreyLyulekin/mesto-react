@@ -1,61 +1,23 @@
-import { eventNames } from "../helpers/eventNames";
-import { useEffect, useState } from "react";
-import { createCustomEvent } from "../helpers/createCustomEvent";
-
-function ImagePopup() {
-   const defaultCardState = {
-      link: "#",
-      name: false,
-      isOpened: false,
-   };
-
+function ImagePopup(props) {
+   const { link, name, isOpened } = props.props;
+   const callbackSetState = props.setStateSelectedCard;
    const handleOverlayClick = (e) => {
       if (e.target?.className?.includes("popup_scale-image")) {
-         createCustomEvent(eventNames.clearSelectedCard, defaultCardState);
+         callbackSetState({
+            link: link,
+            name: name,
+            isOpened: false,
+         });
       }
    };
+
    const handleCloseButtonClick = () => {
-      createCustomEvent(eventNames.clearSelectedCard, defaultCardState);
+      callbackSetState({
+         link: link,
+         name: name,
+         isOpened: false,
+      });
    };
-   const [state, setState] = useState(defaultCardState);
-
-   useEffect(() => {
-      const setCardDataPopup = (e) => {
-         setState({
-            link: e.detail.link,
-            name: e.detail.name,
-            isOpened: e.detail.isOpened,
-         });
-      };
-
-      const clearDataCardPopup = () => {
-         setState((prevState) => {
-            let stateForClose = Object.assign(prevState, {
-               isOpened: false,
-            });
-            return { ...stateForClose };
-         });
-      };
-
-      document.addEventListener(eventNames.selectedCard, setCardDataPopup);
-      document.addEventListener(
-         eventNames.clearSelectedCard,
-         clearDataCardPopup
-      );
-
-      return () => {
-         document.removeEventListener(
-            eventNames.selectedCard,
-            setCardDataPopup
-         );
-
-         document.removeEventListener(
-            eventNames.clearSelectedCard,
-            clearDataCardPopup
-         );
-      };
-   }, []);
-   const { link, name, isOpened } = state;
    return (
       <div
          className={`popup popup_scale-image ${isOpened && "popup_opened"}`}
@@ -73,3 +35,4 @@ function ImagePopup() {
    );
 }
 export default ImagePopup;
+//${isOpened && "popup_opened"}
