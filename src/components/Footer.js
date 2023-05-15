@@ -1,9 +1,8 @@
-
 function Footer() {
   return (
-        <footer className="footer">
-            <p className="footer__text">&copy; 2020 Mesto Russia</p>
-        </footer>
+    <footer className="footer">
+      <p className="footer__text">&copy; 2020 Mesto Russia</p>
+    </footer>
   );
 }
 
