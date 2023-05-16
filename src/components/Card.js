@@ -18,15 +18,26 @@ export default function Card(props) {
 
   const isOwn = owner._id === props.currentUserId;
 
+  const handleDeleteClick = (card) => {
+    props.onCardDelete(card);
+  };
+
   return (
     <div id="card-template" onClick={(e) => handleClickSelectedCard(e, link, name)}>
       <div className="element">
-        {isOwn && <button type="button" aria-label="Кнопка удалить карточку" className="element__trash"></button>}
+        {isOwn && (
+          <button
+            onClick={() => handleDeleteClick(props.cardData)}
+            type="button"
+            aria-label="Кнопка удалить карточку"
+            className="element__trash"></button>
+        )}
         <img className="element__image" alt="Место" src={link} />
         <div className="element__case">
           <h2 className="element__title">{name}</h2>
           <Like
             currentUserId={props.currentUserId}
+            currentCardId={props.cardData._id}
             props={props.cardData}
             onCardLike={(card) => props.onCardLike(card)}
           />

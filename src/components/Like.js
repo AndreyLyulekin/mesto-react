@@ -1,26 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import LoaderContext from "../contexts/LoaderContext";
 import { useContext } from "react";
 
 export default function Like(props) {
   const { likes } = props.props;
+  const pending = useContext(LoaderContext);
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const isLiked = likes.some((i) => i._id === props.currentUserId);
   const cardLikeButtonClassName = `element__like ${isLiked && "element__like_active"}`;
-
   const handleLikeClick = (card) => {
     props.onCardLike(card);
   };
-  const pending = useContext(LoaderContext);
+
+  useEffect(() => {
+    setIsLoading(pending.isLoading && pending.idCard === props.currentCardId);
+  }, [pending, props.currentCardId]);
+
   return (
     <div id="element__like-section" className="element__like-section">
-      {!pending && (
+      {!isLoading ? (
         <button
           onClick={() => handleLikeClick(props.props)}
           className={cardLikeButtonClassName}
           aria-label="Кнопка лайка"
-          type="button"></button>
+          type="button"
+        />
+      ) : (
+        <span className="loader"></span>
       )}
-      {pending && <span class="loader"></span>}
       <p className="element__likesCount">{likes.length}</p>
     </div>
   );

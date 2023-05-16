@@ -39,6 +39,7 @@ function Main(props) {
                   {CardsContext.map((card) => (
                     <Card
                       onCardLike={(card) => props.onCardLike(card)}
+                      onCardDelete={(card) => props.onCardDelete(card)}
                       key={card._id}
                       cardData={card}
                       callbackSetState={callbackSetState}

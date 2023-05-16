@@ -18,6 +18,15 @@ function App() {
   const [popupAvatarState, setStatePopupAvatar] = useState(false);
   const [selectedCardState, setStateCardState] = useState(false);
   const [popupSelectedCardState, setStateSelectedCard] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+  const [apiCardsState, setApiCardsState] = useState([]);
+  const [isLoading, setIsLoading] = useState({
+    isLoading: false,
+    idCard: "",
+  });
+
+  const cardService = new CardsService(apiCredentials);
+  const userService = new UserService(apiCredentials);
 
   const callbackSetState = (setter, data) => {
     setter(data);
@@ -55,12 +64,40 @@ function App() {
     setStateSelectedCard,
   };
 
-  const [currentUser, setCurrentUser] = useState({});
-  const [apiCardsState, setApiCardsState] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-  const cardService = new CardsService(apiCredentials);
-  const userService = new UserService(apiCredentials);
+    if (isLiked) {
+      setIsLoading({ isLoading: true, idCard: card._id });
+      cardService
+        .setLikeInActive(card._id)
+        .then((newCard) => {
+          setApiCardsState((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+        })
+        .catch((e) => console.log(e))
+        .finally(() => setIsLoading({ isLoading: false, idCard: "" }));
+    } else {
+      setIsLoading({ isLoading: true, idCard: card._id });
+      cardService
+        .setLikeActive(card._id)
+        .then((newCard) => {
+          setApiCardsState((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+        })
+        .catch((e) => console.log(e))
+        .finally(() => setIsLoading({ isLoading: false, idCard: "" }));
+    }
+  }
+  function handleCardDelete(card) {
+    cardService
+      .deleteCard(card._id)
+      .then((currentCard) => {
+        if (currentCard.message !== "Пост удалён") return;
+
+        setApiCardsState((state) => state.filter((cardToDelete) => card._id !== cardToDelete._id));
+      })
+      .catch((e) => console.log(e));
+  }
+
   useEffect(() => {
     Promise.all([userService.getCurrentUser(), cardService.getAllCards()])
       .then(([userInfoAnswer, cardsAnswer]) => {
@@ -69,39 +106,6 @@ function App() {
       })
       .catch((e) => console.error(e?.reason || e?.message));
   }, []);
-
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
-    if (isLiked) {
-      setIsLoading(true);
-      cardService
-        .setLikeInActive(card._id)
-        .then((newCard) => {
-          setApiCardsState((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-        })
-        .catch((e) => console.log(e))
-        .finally(() => setIsLoading(false));
-    } else {
-      setIsLoading(true);
-      cardService
-        .setLikeActive(card._id)
-        .then((newCard) => {
-          setApiCardsState((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-        })
-        .catch((e) => console.log(e))
-        .finally(() => setIsLoading(false));
-    }
-  }
-  function handleCardDelete(card) {
-    cardService
-      .deleteCard(card._id)
-      .then((currentCard) => {
-        setApiCardsState((state) => state.filter((c) => (c._id === card._id ? currentCard : c)));
-      })
-      .catch((e) => console.log(e))
-      .finally(() => setIsLoading(false));
-  }
 
   return (
     <div className="root">
@@ -124,6 +128,7 @@ function App() {
           <CurrentUserContext.Provider value={currentUser}>
             <Main
               onCardLike={(card) => handleCardLike(card)}
+              onCardDelete={(card) => handleCardDelete(card)}
               props={callbackSetState}
               setters={callbacksState}
               setStateSelectedCard={setStateSelectedCard}
