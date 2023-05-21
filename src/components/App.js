@@ -2,9 +2,7 @@ import "../index.css";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
 import { useEffect, useState } from "react";
-import { forms } from "../helpers/forms";
 import ImagePopup from "./ImagePopup";
 import { UserService } from "./Api/UserService";
 import { CardsService } from "./Api/CardsService";
@@ -12,6 +10,9 @@ import { apiCredentials } from "./utils/consts";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import CardsContext from "../contexts/CardsContext";
 import LoaderContext from "../contexts/LoaderContext";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
   const [popupProfileState, setStatePopupProfile] = useState(false);
@@ -31,32 +32,7 @@ function App() {
   const callbackSetState = (setter, data) => {
     setter(data);
   };
-  const mainModalsArr = [
-    {
-      title: "Редактировать профиль",
-      divClassName: "popup_profile",
-      containerClassName: "popup__container-profile",
-      state: popupProfileState,
-      callbackSetState: setStatePopupProfile,
-      children: forms.popup_profile,
-    },
-    {
-      title: "Обновить аватар",
-      divClassName: "popup_avatar",
-      containerClassName: "popup__container-profile",
-      state: popupAvatarState,
-      callbackSetState: setStatePopupAvatar,
-      children: forms.profile_edit,
-    },
-    {
-      title: "Новое место",
-      divClassName: "popup_card",
-      containerClassName: "popup__container-card",
-      state: selectedCardState,
-      callbackSetState: setStateCardState,
-      children: forms.card_form,
-    },
-  ];
+
   const callbacksState = {
     setStatePopupProfile,
     setStatePopupAvatar,
@@ -98,6 +74,43 @@ function App() {
       .catch((e) => console.log(e));
   }
 
+  function handleSubmitUserInfo(e, name, description) {
+    e.preventDefault();
+    userService.updateUserInfo({
+      name,
+      about: description,
+    });
+    setCurrentUser((prevState) => ({
+      ...prevState,
+      name: name,
+      about: description,
+    }));
+    setStatePopupProfile(false);
+  }
+
+  function handleSubmitUserAvatar(e, urlAvatarImg) {
+    e.preventDefault();
+    userService.changeAvatar({
+      avatar: urlAvatarImg,
+    });
+    setCurrentUser((prevState) => ({
+      ...prevState,
+      avatar: urlAvatarImg,
+    }));
+    setStatePopupAvatar(false);
+  }
+  function handleAddPlaceSubmit(e, newCardLink, newCardName) {
+    e.preventDefault();
+    cardService
+      .addNewCard({
+        link: newCardLink,
+        name: newCardName,
+      })
+      .then((responseCard) => {
+        setApiCardsState([responseCard, ...apiCardsState]);
+      });
+    setStateCardState(false);
+  }
   useEffect(() => {
     Promise.all([userService.getCurrentUser(), cardService.getAllCards()])
       .then(([userInfoAnswer, cardsAnswer]) => {
@@ -109,23 +122,26 @@ function App() {
 
   return (
     <div className="root">
-      {mainModalsArr.map((modalConfig) => (
-        <PopupWithForm
-          key={modalConfig.title}
-          title={modalConfig.title}
-          divClassName={modalConfig.divClassName}
-          containerClassName={modalConfig.containerClassName}
-          callbackSetState={modalConfig.callbackSetState}
-          state={modalConfig.state}
-          children={modalConfig.children}
-          props={callbacksState}
+      <CurrentUserContext.Provider value={currentUser}>
+        <EditProfilePopup
+          onUpdateUser={(e, name, description) => handleSubmitUserInfo(e, name, description)}
+          isOpen={popupProfileState}
+          onClose={setStatePopupProfile}
         />
-      ))}
-      <ImagePopup props={popupSelectedCardState} setStateSelectedCard={setStateSelectedCard} />
-      <Header />
-      <LoaderContext.Provider value={isLoading}>
-        <CardsContext.Provider value={apiCardsState}>
-          <CurrentUserContext.Provider value={currentUser}>
+        <EditAvatarPopup
+          onUpdateAvatar={(e, urlAvatarImg) => handleSubmitUserAvatar(e, urlAvatarImg)}
+          isOpen={popupAvatarState}
+          onClose={setStatePopupAvatar}
+        />
+        <AddPlacePopup
+          onAddPlace={(e, newCardLink, newCardName) => handleAddPlaceSubmit(e, newCardLink, newCardName)}
+          isOpen={selectedCardState}
+          onClose={setStateCardState}
+        />
+        <ImagePopup props={popupSelectedCardState} setStateSelectedCard={setStateSelectedCard} />
+        <Header />
+        <LoaderContext.Provider value={isLoading}>
+          <CardsContext.Provider value={apiCardsState}>
             <Main
               onCardLike={(card) => handleCardLike(card)}
               onCardDelete={(card) => handleCardDelete(card)}
@@ -133,9 +149,9 @@ function App() {
               setters={callbacksState}
               setStateSelectedCard={setStateSelectedCard}
             />
-          </CurrentUserContext.Provider>
-        </CardsContext.Provider>
-      </LoaderContext.Provider>
+          </CardsContext.Provider>
+        </LoaderContext.Provider>
+      </CurrentUserContext.Provider>
       <Footer />
     </div>
   );

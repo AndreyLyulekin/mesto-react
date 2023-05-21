@@ -6,33 +6,6 @@ export const forms = {
       </button>
     </form>
   ),
-  popup_profile: (
-    <form name="profile-edit" className="popup__form" noValidate>
-      <input
-        name="userName"
-        type="text"
-        placeholder="Ваше имя"
-        className="popup__input popup__input_type_name"
-        minLength="2"
-        maxLength="40"
-        required
-      />
-      <span id="errorMessage-userName" className="popup__input-error"></span>
-      <input
-        name="userJob"
-        type="text"
-        placeholder="Ваша работа"
-        className="popup__input popup__input_type_job"
-        minLength="2"
-        maxLength="200"
-        required
-      />
-      <span id="errorMessage-userJob" className="popup__input-error"></span>
-      <button type="submit" className="popup__btn popup__btn-inactive" disabled>
-        Сохранить
-      </button>
-    </form>
-  ),
   profile_edit: (
     <form name="profile-edit" className="popup__form" noValidate>
       <input

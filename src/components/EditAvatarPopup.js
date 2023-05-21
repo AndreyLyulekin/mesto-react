@@ -1,0 +1,37 @@
+import React, { useRef } from "react";
+import PopupWithForm from "./PopupWithForm";
+
+export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
+  const inputRef = useRef();
+
+  const handleButtonClick = (e) => {
+    onUpdateAvatar(e, inputRef.current.value);
+  };
+  return (
+    <PopupWithForm
+      title="Обновить аватар"
+      divClassName="popup_avatar"
+      containerClassName="popup__container-profile"
+      isOpen={isOpen}
+      callbackSetState={onClose}>
+      {isOpen && (
+        <form name="profile-edit" class="popup__form" novalidate="">
+          <input
+            ref={inputRef}
+            name="avatar"
+            placeholder="Ссылка на аватар"
+            class="popup__input popup__input_type_name"
+            type="url"
+            pattern="^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9\-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&amp;%@!\-\/])*)?"
+            required=""
+          />
+          <span id="errorMessage-avatar" class="popup__input-error"></span>
+          <button onClick={(e) => handleButtonClick(e)} type="submit" class="popup__btn">
+            Сохранить
+          </button>
+        </form>
+      )}
+    </PopupWithForm>
+  );
+}
+// popup__btn-inactive

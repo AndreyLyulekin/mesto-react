@@ -1,6 +1,4 @@
-function PopupWithForm(props) {
-  const { title, divClassName, containerClassName, callbackSetState, state, children } = props;
-
+function PopupWithForm({ title, divClassName, containerClassName, callbackSetState, isOpen, children }) {
   const handleOverlayClick = (e) => {
     if (e.target?.className?.includes(divClassName)) {
       callbackSetState(false);
@@ -12,7 +10,7 @@ function PopupWithForm(props) {
   };
   return (
     <>
-      <div className={`popup ${divClassName} ${state && "popup_opened"}`} onClick={handleOverlayClick}>
+      <div className={`popup ${divClassName} ${isOpen && "popup_opened"}`} onMouseDown={handleOverlayClick}>
         <div className={`popup__container ${containerClassName}`}>
           <h2 className="popup__title">{title}</h2>
           {children}
