@@ -16,7 +16,7 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       isOpen={isOpen}
       callbackSetState={onClose}>
       {isOpen && (
-        <form name="card-form" className="popup__form" noValidate>
+        <form name="card-form" className="popup__form" onSubmit={(e) => handleButtonClick(e)}>
           <input
             name="cardName"
             type="text"
@@ -38,7 +38,7 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
             ref={newCardLink}
           />
           <span id="errorMessage-urlCard" className="popup__input-error"></span>
-          <button type="submit" className="popup__btn" onClick={(e) => handleButtonClick(e)}>
+          <button type="submit" className="popup__btn">
             Создать
           </button>
         </form>

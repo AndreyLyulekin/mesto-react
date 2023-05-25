@@ -15,18 +15,18 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
       isOpen={isOpen}
       callbackSetState={onClose}>
       {isOpen && (
-        <form name="profile-edit" class="popup__form" novalidate="">
+        <form name="profile-edit" className="popup__form" onSubmit={(e) => handleButtonClick(e)}>
           <input
             ref={inputRef}
             name="avatar"
             placeholder="Ссылка на аватар"
-            class="popup__input popup__input_type_name"
+            className="popup__input popup__input_type_name"
             type="url"
             pattern="^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9\-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&amp;%@!\-\/])*)?"
             required=""
           />
-          <span id="errorMessage-avatar" class="popup__input-error"></span>
-          <button onClick={(e) => handleButtonClick(e)} type="submit" class="popup__btn">
+          <span id="errorMessage-avatar" className="popup__input-error"></span>
+          <button type="submit" className="popup__btn">
             Сохранить
           </button>
         </form>

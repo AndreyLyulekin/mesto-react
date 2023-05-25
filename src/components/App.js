@@ -4,15 +4,18 @@ import Main from "./Main";
 import Footer from "./Footer";
 import { useEffect, useState } from "react";
 import ImagePopup from "./ImagePopup";
-import { UserService } from "./Api/UserService";
-import { CardsService } from "./Api/CardsService";
-import { apiCredentials } from "./utils/consts";
+import { UserService } from "../Api/UserService";
+import { CardsService } from "../Api/CardsService";
+import { apiCredentials } from "../utils/consts";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import CardsContext from "../contexts/CardsContext";
 import LoaderContext from "../contexts/LoaderContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+
+const cardService = new CardsService(apiCredentials);
+const userService = new UserService(apiCredentials);
 
 function App() {
   const [popupProfileState, setStatePopupProfile] = useState(false);
@@ -25,9 +28,6 @@ function App() {
     isLoading: false,
     idCard: "",
   });
-
-  const cardService = new CardsService(apiCredentials);
-  const userService = new UserService(apiCredentials);
 
   const callbackSetState = (setter, data) => {
     setter(data);
@@ -76,28 +76,34 @@ function App() {
 
   function handleSubmitUserInfo(e, name, description) {
     e.preventDefault();
-    userService.updateUserInfo({
-      name,
-      about: description,
-    });
-    setCurrentUser((prevState) => ({
-      ...prevState,
-      name: name,
-      about: description,
-    }));
-    setStatePopupProfile(false);
+    userService
+      .updateUserInfo({
+        name,
+        about: description,
+      })
+      .then(() => {
+        setCurrentUser((prevState) => ({
+          ...prevState,
+          name: name,
+          about: description,
+        }));
+        setStatePopupProfile(false);
+      });
   }
 
   function handleSubmitUserAvatar(e, urlAvatarImg) {
     e.preventDefault();
-    userService.changeAvatar({
-      avatar: urlAvatarImg,
-    });
-    setCurrentUser((prevState) => ({
-      ...prevState,
-      avatar: urlAvatarImg,
-    }));
-    setStatePopupAvatar(false);
+    userService
+      .changeAvatar({
+        avatar: urlAvatarImg,
+      })
+      .then(() => {
+        setCurrentUser((prevState) => ({
+          ...prevState,
+          avatar: urlAvatarImg,
+        }));
+        setStatePopupAvatar(false);
+      });
   }
   function handleAddPlaceSubmit(e, newCardLink, newCardName) {
     e.preventDefault();
@@ -108,8 +114,8 @@ function App() {
       })
       .then((responseCard) => {
         setApiCardsState([responseCard, ...apiCardsState]);
+        setStateCardState(false);
       });
-    setStateCardState(false);
   }
   useEffect(() => {
     Promise.all([userService.getCurrentUser(), cardService.getAllCards()])

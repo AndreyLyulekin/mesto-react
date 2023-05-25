@@ -23,7 +23,7 @@ export default function Card(props) {
   };
 
   return (
-    <div id="card-template" onClick={(e) => handleClickSelectedCard(e, link, name)}>
+    <div onClick={(e) => handleClickSelectedCard(e, link, name)}>
       <div className="element">
         {isOwn && (
           <button

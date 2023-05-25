@@ -21,11 +21,7 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       isOpen={isOpen}
       callbackSetState={onClose}>
       {isOpen && (
-        <form
-          onSubmit={(e) => onUpdateUser(e, name, description)}
-          name="profile-edit"
-          className="popup__form"
-          noValidate>
+        <form onSubmit={(e) => onUpdateUser(e, name, description)} name="profile-edit" className="popup__form">
           <input
             name="userName"
             type="text"
