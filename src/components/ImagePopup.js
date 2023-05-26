@@ -21,7 +21,7 @@ function ImagePopup(props) {
   return (
     <div className={`popup popup_scale-image ${isOpened && "popup_opened"}`} onClick={handleOverlayClick}>
       <div className="popup__content-image">
-        <img src={link} alt="Место" className="popup__image" />
+        <img src={link} alt={name} className="popup__image" />
         <figcaption className="popup__subtitle">{name}</figcaption>
         <button
           type="button"

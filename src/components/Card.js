@@ -1,10 +1,11 @@
 import React from "react";
 import Like from "./Like";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
-export default function Card(props) {
-  const { name, link, owner } = props.cardData;
-  const callbackSetState = props.callbackSetState;
-  const setStateSelectedCard = props.setStateSelectedCard;
+export default function Card({ cardData, callbackSetState, setStateSelectedCard, onCardLike, onCardDelete }) {
+  const { name, link, owner } = cardData;
+
+  const currentUser = React.useContext(CurrentUserContext);
   const handleClickSelectedCard = (e, link, name) => {
     if (e.target?.className?.includes("element__image")) {
       const data = {
@@ -16,10 +17,10 @@ export default function Card(props) {
     }
   };
 
-  const isOwn = owner._id === props.currentUserId;
+  const isOwn = owner._id === currentUser._id;
 
   const handleDeleteClick = (card) => {
-    props.onCardDelete(card);
+    onCardDelete(card);
   };
 
   return (
@@ -27,19 +28,19 @@ export default function Card(props) {
       <div className="element">
         {isOwn && (
           <button
-            onClick={() => handleDeleteClick(props.cardData)}
+            onClick={() => handleDeleteClick(cardData)}
             type="button"
             aria-label="Кнопка удалить карточку"
             className="element__trash"></button>
         )}
-        <img className="element__image" alt="Место" src={link} />
+        <img className="element__image" alt={name} src={link} />
         <div className="element__case">
           <h2 className="element__title">{name}</h2>
           <Like
-            currentUserId={props.currentUserId}
-            currentCardId={props.cardData._id}
-            props={props.cardData}
-            onCardLike={(card) => props.onCardLike(card)}
+            currentUserId={currentUser._id}
+            currentCardId={cardData._id}
+            cardData={cardData}
+            onCardLike={(card) => onCardLike(card)}
           />
         </div>
       </div>
