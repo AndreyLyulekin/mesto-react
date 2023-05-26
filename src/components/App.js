@@ -76,6 +76,7 @@ function App() {
 
   function handleSubmitUserInfo(e, name, description) {
     e.preventDefault();
+    console.log("tut");
     userService
       .updateUserInfo({
         name,

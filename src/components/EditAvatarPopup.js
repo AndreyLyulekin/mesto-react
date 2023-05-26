@@ -13,9 +13,11 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
       divClassName="popup_avatar"
       containerClassName="popup__container-profile"
       isOpen={isOpen}
-      callbackSetState={onClose}>
+      callbackSetState={onClose}
+      textButton="Сохранить"
+      onSubmit={handleButtonClick}>
       {isOpen && (
-        <form name="profile-edit" className="popup__form" onSubmit={(e) => handleButtonClick(e)}>
+        <>
           <input
             ref={inputRef}
             name="avatar"
@@ -26,10 +28,7 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
             required=""
           />
           <span id="errorMessage-avatar" className="popup__input-error"></span>
-          <button type="submit" className="popup__btn">
-            Сохранить
-          </button>
-        </form>
+        </>
       )}
     </PopupWithForm>
   );

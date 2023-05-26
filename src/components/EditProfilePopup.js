@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import PopupWithForm from "./PopupWithForm";
-import { useState } from "react";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
 export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
@@ -19,9 +18,11 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       divClassName="popup_profile"
       containerClassName="popup__container-profile"
       isOpen={isOpen}
-      callbackSetState={onClose}>
+      callbackSetState={onClose}
+      textButton="Сохранить"
+      onSubmit={(e) => onUpdateUser(e, name, description)}>
       {isOpen && (
-        <form onSubmit={(e) => onUpdateUser(e, name, description)} name="profile-edit" className="popup__form">
+        <>
           <input
             name="userName"
             type="text"
@@ -46,10 +47,7 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
             onChange={(e) => setDescriptionPopupProfile(e.target.value)}
           />
           <span id="errorMessage-userJob" className="popup__input-error"></span>
-          <button type="submit" className="popup__btn">
-            Сохранить
-          </button>
-        </form>
+        </>
       )}
     </PopupWithForm>
   );
