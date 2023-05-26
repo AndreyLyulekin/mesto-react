@@ -21,35 +21,32 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       callbackSetState={onClose}
       textButton="Сохранить"
       onSubmit={(e) => onUpdateUser(e, name, description)}>
-      {isOpen && (
-        <>
-          <input
-            name="userName"
-            type="text"
-            placeholder="Ваше имя"
-            className="popup__input popup__input_type_name"
-            minLength="2"
-            maxLength="40"
-            required
-            value={name}
-            onChange={(e) => setNamePopupProfile(e.target.value)}
-          />
-          <span id="errorMessage-userName" className="popup__input-error"></span>
-          <input
-            name="userJob"
-            type="text"
-            placeholder="Ваша работа"
-            className="popup__input popup__input_type_job"
-            minLength="2"
-            maxLength="200"
-            required
-            value={description}
-            onChange={(e) => setDescriptionPopupProfile(e.target.value)}
-          />
-          <span id="errorMessage-userJob" className="popup__input-error"></span>
-        </>
-      )}
+      <>
+        <input
+          name="userName"
+          type="text"
+          placeholder="Ваше имя"
+          className="popup__input popup__input_type_name"
+          minLength="2"
+          maxLength="40"
+          required
+          defaultValue={name}
+          onChange={(e) => setNamePopupProfile(e.target.value)}
+        />
+        <span id="errorMessage-userName" className="popup__input-error"></span>
+        <input
+          name="userJob"
+          type="text"
+          placeholder="Ваша работа"
+          className="popup__input popup__input_type_job"
+          minLength="2"
+          maxLength="200"
+          required
+          defaultValue={description}
+          onChange={(e) => setDescriptionPopupProfile(e.target.value)}
+        />
+        <span id="errorMessage-userJob" className="popup__input-error"></span>
+      </>
     </PopupWithForm>
   );
 }
-// popup__btn-inactive

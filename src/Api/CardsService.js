@@ -1,7 +1,8 @@
 import { Api } from "./Api";
+import { apiCredentials } from "../utils/consts";
 
-export class CardsService extends Api {
-  constructor(apiCredentials) {
+class CardsService extends Api {
+  constructor() {
     super(apiCredentials);
   }
 
@@ -30,3 +31,5 @@ export class CardsService extends Api {
     return super.delete(`/cards/${cardId}/likes`);
   }
 }
+
+export const cardService = new CardsService(apiCredentials);

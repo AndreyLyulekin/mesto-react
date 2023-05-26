@@ -17,28 +17,26 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       callbackSetState={onClose}
       textButton="Создать"
       onSubmit={handleButtonClick}>
-      {isOpen && (
-        <>
-          <input
-            name="cardName"
-            type="text"
-            placeholder="Введите название"
-            className="popup__input popup__input_card_title"
-            minLength="2"
-            maxLength="30"
-            onChange={(e) => setNameNewCard(e.target.value)}
-          />
-          <span id="errorMessage-cardName" className="popup__input-error"></span>
-          <input
-            name="urlCard"
-            placeholder="Вставьте ссылку на картину"
-            className="popup__input popup__input_card_link"
-            type="url"
-            onChange={(e) => setLinkNewCard(e.target.value)}
-          />
-          <span id="errorMessage-urlCard" className="popup__input-error"></span>
-        </>
-      )}
+      <>
+        <input
+          name="cardName"
+          type="text"
+          placeholder="Введите название"
+          className="popup__input popup__input_card_title"
+          minLength="2"
+          maxLength="30"
+          onChange={(e) => setNameNewCard(e.target.value)}
+        />
+        <span id="errorMessage-cardName" className="popup__input-error"></span>
+        <input
+          name="urlCard"
+          placeholder="Вставьте ссылку на картину"
+          className="popup__input popup__input_card_link"
+          type="url"
+          onChange={(e) => setLinkNewCard(e.target.value)}
+        />
+        <span id="errorMessage-urlCard" className="popup__input-error"></span>
+      </>
     </PopupWithForm>
   );
 }

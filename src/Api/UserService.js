@@ -1,7 +1,8 @@
 import { Api } from "./Api";
+import { apiCredentials } from "../utils/consts";
 
-export class UserService extends Api {
-  constructor(apiCredentials) {
+class UserService extends Api {
+  constructor() {
     super(apiCredentials);
   }
 
@@ -19,3 +20,5 @@ export class UserService extends Api {
     return super.patch("/users/me/avatar", avatarData);
   }
 }
+
+export const userService = new UserService(apiCredentials);

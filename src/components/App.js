@@ -4,18 +4,14 @@ import Main from "./Main";
 import Footer from "./Footer";
 import { useEffect, useState } from "react";
 import ImagePopup from "./ImagePopup";
-import { UserService } from "../Api/UserService";
-import { CardsService } from "../Api/CardsService";
-import { apiCredentials } from "../utils/consts";
+import { userService } from "../Api/UserService";
+import { cardService } from "../Api/CardsService";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import CardsContext from "../contexts/CardsContext";
 import LoaderContext from "../contexts/LoaderContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-
-const cardService = new CardsService(apiCredentials);
-const userService = new UserService(apiCredentials);
 
 function App() {
   const [popupProfileState, setStatePopupProfile] = useState(false);
@@ -29,7 +25,11 @@ function App() {
     idCard: "",
   });
 
-  const callbackSetState = (setter, data) => {
+  const closeAllPopups = (currentPopup) => {
+    currentPopup(false);
+  };
+
+  const setCallbacksState = (setter, data) => {
     setter(data);
   };
 
@@ -71,7 +71,7 @@ function App() {
 
         setApiCardsState((state) => state.filter((cardToDelete) => card._id !== cardToDelete._id));
       })
-      .catch((e) => console.log(e));
+      .catch(console.error);
   }
 
   function handleSubmitUserInfo(e, name, description) {
@@ -88,8 +88,9 @@ function App() {
           name: name,
           about: description,
         }));
-        setStatePopupProfile(false);
-      });
+        closeAllPopups(setStatePopupProfile);
+      })
+      .catch(console.error);
   }
 
   function handleSubmitUserAvatar(e, urlAvatarImg) {
@@ -103,8 +104,9 @@ function App() {
           ...prevState,
           avatar: urlAvatarImg,
         }));
-        setStatePopupAvatar(false);
-      });
+        closeAllPopups(setStatePopupAvatar);
+      })
+      .catch(console.error);
   }
   function handleAddPlaceSubmit(e, newCardLink, newCardName) {
     e.preventDefault();
@@ -115,8 +117,9 @@ function App() {
       })
       .then((responseCard) => {
         setApiCardsState([responseCard, ...apiCardsState]);
-        setStateCardState(false);
-      });
+        closeAllPopups(setStateCardState);
+      })
+      .catch(console.error);
   }
   useEffect(() => {
     Promise.all([userService.getCurrentUser(), cardService.getAllCards()])
@@ -152,7 +155,7 @@ function App() {
             <Main
               onCardLike={(card) => handleCardLike(card)}
               onCardDelete={(card) => handleCardDelete(card)}
-              props={callbackSetState}
+              props={setCallbacksState}
               setters={callbacksState}
               setStateSelectedCard={setStateSelectedCard}
             />
